@@ -43,6 +43,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.room.common)
     val nav_version = "2.8.4"
 
     implementation(libs.androidx.core.ktx)

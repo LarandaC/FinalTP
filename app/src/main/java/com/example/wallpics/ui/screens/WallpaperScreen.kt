@@ -69,6 +69,32 @@ fun WallpaperScreen(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
+
+        Card(
+            modifier = Modifier
+                .padding(top = 10.dp, bottom = 20.dp)
+                .wrapContentSize()
+                .padding(horizontal = 30.dp),
+            shape = RoundedCornerShape(50),
+            colors = CardDefaults.cardColors(
+                containerColor = if (isDarkTheme) DarkColorScheme.primary else BarraFondoDark
+            ),
+            elevation = CardDefaults.elevatedCardElevation(4.dp),
+            onClick = {
+                // Navegar a la pantalla de populares
+                navController.navigate(Route.Popular)
+            }
+        ) {
+            Text(
+                text = "Más populares",
+                modifier = Modifier
+                    .padding(10.dp),
+                fontWeight = FontWeight.SemiBold,
+                color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
         WallpaperGrid(
             listaWallpappers,
             {

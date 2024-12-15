@@ -1,7 +1,6 @@
 package com.example.wallpics.ui
 
 import FavoritesScreen
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +22,7 @@ import com.example.wallpics.models.FavoritesViewModel
 import com.example.wallpics.models.FavoritesViewModelFactory
 import com.example.wallpics.models.WallpaperViewModel
 import com.example.wallpics.ui.screens.LoginScreen
+import com.example.wallpics.ui.screens.PopularWallpapersScreen
 import com.example.wallpics.ui.screens.RegisterScreen
 import com.example.wallpics.ui.screens.Search
 import com.example.wallpics.ui.screens.WallpaperScreen
@@ -48,6 +48,7 @@ fun WallpicsApp( modifier: Modifier = Modifier, viewModel: WallpicsViewModel = v
     val favoritesViewModel: FavoritesViewModel = viewModel(
         factory = FavoritesViewModelFactory(favoritesDao)
     )
+
 
     MaterialTheme(
         colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme
@@ -88,8 +89,14 @@ fun WallpicsApp( modifier: Modifier = Modifier, viewModel: WallpicsViewModel = v
                     composable<Route.Search>{
                         Search(navController = navController, mainViewModel = wallpaperViewModel)
                     }
+                    composable(Route.Popular.toString()) {
+                        PopularWallpapersScreen(
+                            navController = navController,
+                            onWallpaperClick = {}
+                        )
+                    }
+                    }
                 }
             }
     }
-}
 

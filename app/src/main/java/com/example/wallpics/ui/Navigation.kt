@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.wallpics.R
 import com.example.wallpics.ui.theme.DarkColorScheme
 import com.example.wallpics.ui.theme.IconoElegidoFondoDark
@@ -61,6 +61,8 @@ sealed class Route {
     object Login : Route()
     @Serializable
     object Register : Route()
+    @Serializable
+    object Popular: Route()
 }
 
 data class TopLevelRoute(
@@ -72,7 +74,8 @@ data class TopLevelRoute(
 val topLevelRoutes = listOf(
     TopLevelRoute("Ultimos Añadidos", Route.Home, Icons.Rounded.Home),
     TopLevelRoute("Favorites", Route.Favorites, Icons.Rounded.Favorite),
-    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person)
+    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person),
+    TopLevelRoute("Populares", Route.Popular, Icons.Rounded.Star)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

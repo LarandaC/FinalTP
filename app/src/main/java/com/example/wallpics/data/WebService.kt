@@ -19,4 +19,12 @@ interface WebService {
         @Query("purity") purity: Int,
         @Query("page") page: Int,
     ): Response<WallpaperResponse>
+
+    @GET("search")
+    suspend fun getPopularWallpapers(
+        @Query("sort") sort: String = "favorites",
+        @Query("purity") purity: Int,
+        @Query("page") page: Int,
+    ): Response<WallpaperResponse>
+
 }
