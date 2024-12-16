@@ -10,7 +10,6 @@ fun WallpaperEntity.toModel(): WallpaperModel {
         shortUrl = this.shortUrl,
         category = this.category,
         fileSize = "",
-        fileType = "",
         purity = "",
         createdAt = "",
         resolution = this.resolution,
@@ -19,7 +18,9 @@ fun WallpaperEntity.toModel(): WallpaperModel {
         ratio = this.ratio,
         dimensionX = 0,
         dimensionY = 0,
-        path = this.path
+        path = this.path,
+        tags = gson.fromJson(this.tags, Array<Tag>::class.java).toList(),
+        uploader = gson.fromJson(this.uploader, Uploader::class.java),
     )
 }
 

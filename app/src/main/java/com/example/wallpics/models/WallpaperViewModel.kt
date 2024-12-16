@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wallpics.data.retrofitService
 import kotlinx.coroutines.launch
 
@@ -21,15 +20,35 @@ class WallpaperViewModel: ViewModel() {
     fun getWallpapers(purity: Int, page: Int) {
         viewModelScope.launch {
             try {
+                // Primer paso: obtener las imágenes
                 val response = retrofitService.webService.getWallpapers(purity, page)
                 if (response.isSuccessful) {
-                    // Deserializamos el cuerpo de la respuesta como WallpaperResponse
-                    val wallpapersResponse = response.body() // Esto es de tipo WallpaperResponse
-                    println("Respuesta de la API: $wallpapersResponse")
+                    val wallpapersResponse = response.body()
+                    println("Respuesta: $wallpapersResponse")
                     if (wallpapersResponse != null) {
-                        imageList.value += wallpapersResponse.resultados
+                        // Para cada imagen, obtener sus detalles (tags y uploader)
+                        wallpapersResponse.resultados.forEach { wallpaper ->
+                            val detailsResponse = retrofitService.webService.getWallpaperById(wallpaper.id)
+                            if (detailsResponse.isSuccessful) {
+                                val wallpaperDetails = detailsResponse.body()
+                                wallpaperDetails?.let {
+                                    val wallpaperWithDetails = it.data
+                                    // Ahora fuera del let, podemos crear wallpaperWithCompleteDetails
+                                    val wallpaperWithCompleteDetails = wallpaper.copy(
+                                        uploader = wallpaperWithDetails.uploader
+                                    )
+                                    imageList.value += wallpaperWithCompleteDetails
+                                    println("Respuesta: ${imageList.value}")
+                                }
+                            } else {
+                                println("Error al obtener detalles de la imagen: ${detailsResponse.message()}")
+                            }
+                        }
                         currentPage = wallpapersResponse.meta.currentPage
                         lastPage = wallpapersResponse.meta.lastPage
+                        if (currentPage < lastPage) {
+                            getWallpapers(purity, currentPage + 1)  // Cargar la siguiente página
+                        }
                     } else {
                         println("La respuesta está vacía o nula.")
                     }
@@ -41,11 +60,6 @@ class WallpaperViewModel: ViewModel() {
             }
         }
     }
-
-    fun selectWallpaper (wallpaper: WallpaperModel) {
-        selectedWallpaper = wallpaper
-    }
-
 
     fun searchByQuery(query: String, purity: Int, page: Int) {
         viewModelScope.launch {
@@ -70,4 +84,9 @@ class WallpaperViewModel: ViewModel() {
             }
         }
     }
+
+    fun selectWallpaper (wallpaper: WallpaperModel) {
+        selectedWallpaper = wallpaper
+    }
+
 }

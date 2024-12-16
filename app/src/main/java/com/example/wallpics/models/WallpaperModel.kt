@@ -14,8 +14,6 @@ data class WallpaperModel(
     var category: String,
     @SerializedName("file_size")
     var fileSize: String,
-    @SerializedName("file_type")
-    var fileType: String,
     @SerializedName("purity")
     var purity: String,
     @SerializedName("created_at")
@@ -30,6 +28,39 @@ data class WallpaperModel(
     @SerializedName("dimension_y")
     var dimensionY: Number,
     var path: String,
+
+    @SerializedName("tags")
+    var tags: List<Tag>?,
+    var uploader : Uploader
+)
+
+data class Tag(
+    val id: Int,
+    val name: String,
+    val alias: String,
+    @SerializedName("category_id")
+    val categoryId: Int,
+    val category: String,
+    val purity: String,
+    @SerializedName("created_at")
+    val createdAt: String
+)
+
+data class Uploader(
+    val username: String,
+    val group: String,
+    val avatar: Avatar
+)
+
+data class Avatar(
+    @SerializedName("200px")
+    val large: String,
+    @SerializedName("128px")
+    val medium: String,
+    @SerializedName("32px")
+    val small: String,
+    @SerializedName("20px")
+    val tiny: String
 )
 
 data class Thumbs(
@@ -61,6 +92,8 @@ fun WallpaperModel.toEntity(): WallpaperEntity {
         resolution = this.resolution,
         ratio = this.ratio,
         path = this.path,
-        thumbs = gson.toJson(this.thumbs)
+        thumbs = gson.toJson(this.thumbs),
+        uploader = gson.toJson(this.uploader),
+        tags = gson.toJson(this.tags)
     )
 }

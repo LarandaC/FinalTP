@@ -17,7 +17,6 @@ val DarkColorScheme = darkColorScheme(
     primary = BotonPrimarioDark,
     secondary = BotonSecundario,
     surface = FondoDark,
-
     onBackground = PrimaryTextDark,
     onSurface = PrimaryTextDark
 )

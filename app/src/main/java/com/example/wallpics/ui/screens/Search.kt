@@ -54,7 +54,7 @@ fun Search(
                 keyboardController?.hide()
             },
             placeholder = {
-                Text(text = "Search")
+                Text(text = "Buscar")
             },
             leadingIcon = {
                 Icon(
@@ -86,7 +86,7 @@ fun Search(
                     ) {
                         Text(
                             text = "No hay nada que mostrar",
-                            style = MaterialTheme.typography.titleSmall
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
                             text = "Intenta con una nueva busqueda",

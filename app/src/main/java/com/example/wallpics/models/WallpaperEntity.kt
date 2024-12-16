@@ -11,5 +11,7 @@ data class WallpaperEntity(
     val resolution: String,
     val ratio: String,
     val path: String,
-    val thumbs: String
+    val thumbs: String,
+    val tags: String,
+    val uploader: String
 )

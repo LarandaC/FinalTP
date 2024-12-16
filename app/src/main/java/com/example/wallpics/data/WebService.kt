@@ -1,9 +1,10 @@
 package com.example.wallpics.data
 
+import com.example.wallpics.models.WallpaperDetailsResponse
 import com.example.wallpics.models.WallpaperResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WebService {
@@ -27,4 +28,7 @@ interface WebService {
         @Query("page") page: Int,
     ): Response<WallpaperResponse>
 
-}
+    @GET("w/{id}")
+    suspend fun getWallpaperById(
+        @Path("id") id: String
+    ): Response<WallpaperDetailsResponse>
