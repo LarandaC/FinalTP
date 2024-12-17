@@ -118,7 +118,7 @@ fun Search(
                             favoritesViewModel.removeFavorite(wallpaper.toEntity())
                         },
                         onBottomReached = {
-
+                            println(viewModel.currentPage)
                              viewModel.searchByQuery(query = searchQuery, purity = 100, page = ++viewModel.currentPage)
                         }
                     )

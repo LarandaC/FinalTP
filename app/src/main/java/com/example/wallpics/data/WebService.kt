@@ -21,6 +21,14 @@ interface WebService {
         @Query("page") page: Int,
     ): Response<WallpaperResponse>
 
+    @GET("search")
+    suspend fun getPopularWallpapers(
+        @Query("purity") purity: Int,
+        @Query("page") page: Int,
+        @Query("sorting") sorting: String = "toplist",
+        @Query("topRange") topRange: String = "1W",
+    ): Response<WallpaperResponse>
+
     @GET("w/{id}")
     suspend fun getWallpaperById(
         @Path("id") id: String

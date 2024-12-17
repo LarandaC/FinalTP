@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,92 +59,101 @@ fun WallpaperView(
     val isDarkTheme = isSystemInDarkTheme()
 
     scrollBehavior.state.heightOffset = 0f
-    val picture = wallpaperViewModel.selectedWallpaper!!
+    val picture = wallpaperViewModel.selectedWallpaper
 
     val scaleState = remember { mutableStateOf(1f) }
 
-    Scaffold(
-        floatingActionButton = {
-            val itemList = listOf(
-                FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
-                FABItem(icon = Icons.Rounded.Create, text = "Definir fondo"),
-                FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
-            )
-            ExpandableFAB(
-                items = itemList,
-                onItemClick = { item ->
-                    when (item.text) {
-                        "Agregar a favoritos" ->{
-                            favoriteViewModel.addFavorite(picture.toEntity())
-                        }
-
-                        "Descargar" -> {
-                            downloader.downloadFile(picture.path, picture.id)
-                            downloadViewModel.addDownload(picture.toDownloadEntity())
-                        }
-
-                        "Definir fondo" -> {}
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+    if (picture == null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f) // Da más peso al wallpaper
-            ) {
-                Image(
-                    painter = rememberAsyncImagePainter(picture.path),
-                    contentDescription = picture.category,
-                    modifier = Modifier
-                        .fillMaxSize() // Asegura que la imagen ocupe el ancho completo
-                        .aspectRatio(1f) // Mantiene la relación de aspecto de la imagen
-                        .graphicsLayer(
-                            scaleX = scaleState.value,
-                            scaleY = scaleState.value
-                        )
-                        .pointerInput(Unit) {
-                            detectTransformGestures { _, _, zoom, _ ->
-                                // Limita el zoom para no hacerlo más pequeño que el tamaño original
-                                scaleState.value = (scaleState.value * zoom).coerceIn(1f, 3f)
+            CircularProgressIndicator()
+        }
+    } else {
+        Scaffold(
+            floatingActionButton = {
+                val itemList = listOf(
+                    FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
+                    FABItem(icon = Icons.Rounded.Create, text = "Definir fondo"),
+                    FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
+                )
+                ExpandableFAB(
+                    items = itemList,
+                    onItemClick = { item ->
+                        when (item.text) {
+                            "Agregar a favoritos" -> {
+                                favoriteViewModel.addFavorite(picture.toEntity())
                             }
+
+                            "Descargar" -> {
+                                downloader.downloadFile(picture.path, picture.id)
+                                downloadViewModel.addDownload(picture.toDownloadEntity())
+                            }
+
+                            "Definir fondo" -> {}
                         }
+                    }
                 )
             }
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                // Imagen del uploader
-                picture.uploader?.avatar?.medium?.let { uploaderImageUrl ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f) // Da más peso al wallpaper
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(picture.path),
+                        contentDescription = picture.category,
                         modifier = Modifier
-                            .padding(bottom = 8.dp)
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(uploaderImageUrl),
-                            contentDescription = "Uploader Image",
-                            modifier = Modifier
-                                .clip(CircleShape) // Recorta en forma de círculo
-                        )
-                        Text(
-                            text = picture.uploader.username ?: "N/A",
-                            modifier = Modifier.padding(start = 8.dp) // Espaciado entre la imagen y el texto
-                        )
-                    }
+                            .fillMaxSize() // Asegura que la imagen ocupe el ancho completo
+                            .aspectRatio(1f) // Mantiene la relación de aspecto de la imagen
+                            .graphicsLayer(
+                                scaleX = scaleState.value,
+                                scaleY = scaleState.value
+                            )
+                            .pointerInput(Unit) {
+                                detectTransformGestures { _, _, zoom, _ ->
+                                    // Limita el zoom para no hacerlo más pequeño que el tamaño original
+                                    scaleState.value = (scaleState.value * zoom).coerceIn(1f, 3f)
+                                }
+                            }
+                    )
                 }
-                Text(
-                    text = "Category: ${picture.category ?: "N/A"}",
-                    modifier = Modifier.padding(top = 8.dp) // Espaciado hacia abajo
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    // Imagen del uploader
+                    picture.uploader?.avatar?.medium?.let { uploaderImageUrl ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(uploaderImageUrl),
+                                contentDescription = "Uploader Image",
+                                modifier = Modifier
+                                    .clip(CircleShape) // Recorta en forma de círculo
+                            )
+                            Text(
+                                text = picture.uploader.username ?: "N/A",
+                                modifier = Modifier.padding(start = 8.dp) // Espaciado entre la imagen y el texto
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Category: ${picture.category ?: "N/A"}",
+                        modifier = Modifier.padding(top = 8.dp) // Espaciado hacia abajo
+                    )
+                }
             }
         }
     }

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -14,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -23,36 +27,42 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.wallpics.models.FavoritesViewModel
+import com.example.wallpics.models.PopularWallpapersViewModel
+import com.example.wallpics.models.WallpaperModel
 import com.example.wallpics.models.WallpaperViewModel
 import com.example.wallpics.models.toEntity
+import com.example.wallpics.models.toModel
 import com.example.wallpics.ui.Route
 import com.example.wallpics.ui.components.WallpaperGrid
+import com.example.wallpics.ui.components.WallpaperItem
 import com.example.wallpics.ui.theme.BarraFondoDark
 import com.example.wallpics.ui.theme.DarkColorScheme
 import com.example.wallpics.ui.theme.LightColorScheme
 
 @Composable
-fun WallpaperScreen(
-    wallpaperViewModel: WallpaperViewModel = viewModel(),
+fun PopularWallpapersScreen(
+    viewModel: PopularWallpapersViewModel = viewModel(),
     navController: NavController,
+    wallpaperViewModel: WallpaperViewModel = viewModel(),
     favoritesViewModel: FavoritesViewModel
 ) {
-    val listaWallpappers = wallpaperViewModel.imageList.value
+    // Observamos el StateFlow de los wallpapers populares
+    val listaWallpappers = viewModel.imageList.value
     val isDarkTheme = isSystemInDarkTheme()
     val favorites by favoritesViewModel.favorites.observeAsState(emptyList())
     val favoriteIds = favorites.map { it.id }.toSet()
 
-    // función para obtener los wallpapers
     LaunchedEffect(Unit) {
-        wallpaperViewModel.getWallpapers(purity = 100, page = wallpaperViewModel.currentPage)
+        viewModel.fetchPopularWallpapers(purity = 100, page = viewModel.currentPage)
     }
 
-    // Pantalla principal
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
         Card(
             modifier = Modifier
@@ -66,7 +76,7 @@ fun WallpaperScreen(
             elevation = CardDefaults.elevatedCardElevation(4.dp)
         ) {
             Text(
-                text = "Úlimos añadidos",
+                text = "Populares de la semana",
                 modifier = Modifier
                     .padding(10.dp),
                 fontWeight = FontWeight.SemiBold,
@@ -93,9 +103,11 @@ fun WallpaperScreen(
                 favoritesViewModel.removeFavorite(wallpaper.toEntity())
             },
             onBottomReached = {
-                wallpaperViewModel.getWallpapers(purity = 100, page = ++wallpaperViewModel.currentPage)
+                viewModel.fetchPopularWallpapers(
+                    purity = 100,
+                    page = ++viewModel.currentPage
+                )
             }
         )
     }
 }
-

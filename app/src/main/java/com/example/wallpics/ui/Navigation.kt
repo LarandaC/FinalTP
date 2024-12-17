@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -61,6 +62,8 @@ sealed class Route {
     @Serializable
     object Register : Route()
     @Serializable
+    object Popular: Route()
+    @Serializable
     object Download: Route()
 }
 
@@ -72,8 +75,9 @@ data class TopLevelRoute(
 
 val topLevelRoutes = listOf(
     TopLevelRoute("Ultimos Añadidos", Route.Home, Icons.Rounded.Home),
+    TopLevelRoute("Populares", Route.Popular, Icons.Rounded.Star),
     TopLevelRoute("Favorites", Route.Favorites, Icons.Rounded.Favorite),
-    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person)
+    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

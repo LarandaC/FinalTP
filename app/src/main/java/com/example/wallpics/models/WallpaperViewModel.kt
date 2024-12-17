@@ -24,31 +24,11 @@ class WallpaperViewModel: ViewModel() {
                 val response = retrofitService.webService.getWallpapers(purity, page)
                 if (response.isSuccessful) {
                     val wallpapersResponse = response.body()
-                    println("Respuesta: $wallpapersResponse")
+                    println("Search response: $wallpapersResponse")
                     if (wallpapersResponse != null) {
-                        // Para cada imagen, obtener sus detalles (tags y uploader)
-                        wallpapersResponse.resultados.forEach { wallpaper ->
-                            val detailsResponse = retrofitService.webService.getWallpaperById(wallpaper.id)
-                            if (detailsResponse.isSuccessful) {
-                                val wallpaperDetails = detailsResponse.body()
-                                wallpaperDetails?.let {
-                                    val wallpaperWithDetails = it.data
-                                    // Ahora fuera del let, podemos crear wallpaperWithCompleteDetails
-                                    val wallpaperWithCompleteDetails = wallpaper.copy(
-                                        uploader = wallpaperWithDetails.uploader
-                                    )
-                                    imageList.value += wallpaperWithCompleteDetails
-                                    println("Respuesta: ${imageList.value}")
-                                }
-                            } else {
-                                println("Error al obtener detalles de la imagen: ${detailsResponse.message()}")
-                            }
-                        }
+                        imageList.value += wallpapersResponse.resultados
                         currentPage = wallpapersResponse.meta.currentPage
                         lastPage = wallpapersResponse.meta.lastPage
-                        if (currentPage < lastPage) {
-                            getWallpapers(purity, currentPage + 1)  // Cargar la siguiente página
-                        }
                     } else {
                         println("La respuesta está vacía o nula.")
                     }
@@ -86,7 +66,28 @@ class WallpaperViewModel: ViewModel() {
     }
 
     fun selectWallpaper (wallpaper: WallpaperModel) {
-        selectedWallpaper = wallpaper
+        selectedWallpaper = null
+        viewModelScope.launch {
+            try {
+            val detailsResponse = retrofitService.webService.getWallpaperById(wallpaper.id)
+                if (detailsResponse.isSuccessful) {
+                    val wallpaperDetails = detailsResponse.body()
+                    wallpaperDetails?.let {
+                        val wallpaperWithDetails = it.data
+                        // Ahora fuera del let, podemos crear wallpaperWithCompleteDetails
+                        val wallpaperWithCompleteDetails = wallpaper.copy(
+                            uploader = wallpaperWithDetails.uploader
+                        )
+                        selectedWallpaper = wallpaperWithCompleteDetails
+                    }
+                } else {
+                    println("Error al obtener detalles de la imagen: ${detailsResponse.message()}")
+                }
+
+            } catch (e: Exception) {
+                println("Error al obtener detalles de la imagen: ${e.message}")
+            }
+        }
     }
 
 }
