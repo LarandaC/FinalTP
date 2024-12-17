@@ -1,7 +1,6 @@
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -57,8 +56,12 @@ fun FavoritesScreen(
                 items(favorites) { wallpaperEntity ->
                     WallpaperItem(
                         wallpaper = wallpaperEntity.toModel(),
+                        isFavorite = true,
                         onClick = { onWallpaperClick(wallpaperEntity) },
                         onDoubleClick = {
+                            viewModel.removeFavorite(wallpaperEntity)
+                        },
+                        onRemoveFavorite = {
                             viewModel.removeFavorite(wallpaperEntity)
                         }
                     )

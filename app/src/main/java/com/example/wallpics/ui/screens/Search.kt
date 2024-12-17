@@ -14,6 +14,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,8 +24,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.wallpics.models.FavoritesViewModel
 import com.example.wallpics.models.SearchViewModel
 import com.example.wallpics.models.WallpaperViewModel
+import com.example.wallpics.models.toEntity
 import com.example.wallpics.ui.Route
 import com.example.wallpics.ui.WallpicsViewModel
 import com.example.wallpics.ui.components.WallpaperGrid
@@ -34,11 +37,14 @@ import com.example.wallpics.ui.components.WallpaperGrid
 fun Search(
     viewModel: SearchViewModel = viewModel(),
     navController: NavController?,
-    mainViewModel: WallpaperViewModel = viewModel()
+    mainViewModel: WallpaperViewModel = viewModel(),
+    favoritesViewModel: FavoritesViewModel
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val wallpaperList = viewModel.imageList.value
     val keyboardController = LocalSoftwareKeyboardController.current
+    val favorites by favoritesViewModel.favorites.observeAsState(emptyList())
+    val favoriteIds = favorites.map { it.id }.toSet()
 
         SearchBar(
             query = searchQuery,
@@ -96,9 +102,20 @@ fun Search(
                 } else {
                     WallpaperGrid(
                         wallpaperList,
+                        favoriteIds = favoriteIds,
                         {
                             mainViewModel.selectWallpaper(it)
                             navController?.navigate(Route.WallpaperView)
+                        },
+                        onWallpaperDoubleClick = { wallpaper ->
+                            if (favoriteIds.contains(wallpaper.id)) {
+                                favoritesViewModel.removeFavorite(wallpaper.toEntity())
+                            } else {
+                                favoritesViewModel.addFavorite(wallpaper.toEntity())
+                            }
+                        },
+                        onRemoveFavorite = { wallpaper ->
+                            favoritesViewModel.removeFavorite(wallpaper.toEntity())
                         },
                         onBottomReached = {
 

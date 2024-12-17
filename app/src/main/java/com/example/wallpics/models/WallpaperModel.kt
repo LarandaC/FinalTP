@@ -28,22 +28,8 @@ data class WallpaperModel(
     @SerializedName("dimension_y")
     var dimensionY: Number,
     var path: String,
-
-    @SerializedName("tags")
-    var tags: List<Tag>?,
+    
     var uploader : Uploader
-)
-
-data class Tag(
-    val id: Int,
-    val name: String,
-    val alias: String,
-    @SerializedName("category_id")
-    val categoryId: Int,
-    val category: String,
-    val purity: String,
-    @SerializedName("created_at")
-    val createdAt: String
 )
 
 data class Uploader(
@@ -93,7 +79,22 @@ fun WallpaperModel.toEntity(): WallpaperEntity {
         ratio = this.ratio,
         path = this.path,
         thumbs = gson.toJson(this.thumbs),
-        uploader = gson.toJson(this.uploader),
-        tags = gson.toJson(this.tags)
+        uploader = gson.toJson(this.uploader)
+    )
+}
+
+// Función de conversión de modelo a entidad
+fun WallpaperModel.toDownloadEntity(): DownloadEntity {
+    val gson = Gson()
+    return DownloadEntity(
+        id = this.id,
+        shortUrl = this.shortUrl,
+        category = this.category,
+        resolution = this.resolution,
+        ratio = this.ratio,
+        path = this.path,
+        thumbs = gson.toJson(this.thumbs),
+        fileSize = this.fileSize,
+        uploader =  gson.toJson(this.uploader)
     )
 }
