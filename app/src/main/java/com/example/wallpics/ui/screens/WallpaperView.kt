@@ -64,7 +64,7 @@ fun WallpaperView(
             val itemList = listOf(
                 FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
                 FABItem(icon = Icons.Rounded.Create, text = "Definir fondo"),
-                FABItem(icon = Icons.Rounded.ArrowDropDown, text = "Descargar"),
+                FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
             )
             ExpandableFAB(
                 items = itemList,
@@ -88,7 +88,7 @@ fun WallpaperView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp)
+                .padding(innerPadding)
         ) {
             Box(
                 modifier = Modifier
