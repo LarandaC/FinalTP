@@ -12,6 +12,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,17 +21,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.wallpics.data.DownloadDao
+import com.example.wallpics.models.DownloadEntity
 import com.example.wallpics.models.DownloadViewModel
-import com.example.wallpics.models.WallpaperViewModel
+import com.example.wallpics.models.DownloadsViewModelFactory
+import com.example.wallpics.models.toModel
+import com.example.wallpics.ui.components.DetailImageItem
 import com.example.wallpics.ui.theme.DarkColorScheme
 import com.example.wallpics.ui.theme.LightColorScheme
 
 @Composable
 fun Download(
-    viewModel: DownloadViewModel = viewModel(),
-    navController: NavController?,
-    mainViewModel: WallpaperViewModel = viewModel()
+    downloadDao: DownloadDao,
+    navController: NavController,
+    onWallpaperClick: (DownloadEntity) -> Unit
 ) {
+    val viewModel: DownloadViewModel = viewModel(
+        factory = DownloadsViewModelFactory(downloadDao)
+    )
+
+    // Observar la lista de favoritos desde el ViewModel
+    val downloads by viewModel.downloads.observeAsState(emptyList())
+
     val isDarkTheme = isSystemInDarkTheme()
     Column(
         modifier = Modifier
@@ -55,9 +68,9 @@ fun Download(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top
             ) {
-                items(viewModel.downloads) { item ->
-                    //DownloadItemRow(item, onDelete = { viewModel.removeDownload(item) })
-                    Divider(color = Color.DarkGray, thickness = 1.dp)
+                items(downloads) { downloadEntity ->
+                    DetailImageItem(downloadEntity.toModel(), "Eliminar descarga",android.R.drawable.ic_menu_delete, onActionEvent = { viewModel.removeDownload(downloadEntity) })
+                    Divider(color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background, thickness = 1.dp)
                 }
             }
         }

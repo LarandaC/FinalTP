@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Create
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wallpics.models.WallpaperViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.wallpics.models.DownloadViewModel
+import com.example.wallpics.models.toDownloadEntity
 import com.example.wallpics.ui.components.ExpandableFAB
 import com.example.wallpics.ui.components.FABItem
 import com.example.wallpics.ui.theme.BarraFondoDark
@@ -44,7 +47,8 @@ import com.example.wallpics.utils.AndroidDownloader
 @Composable
 fun WallpaperView(
     wallpaperViewModel: WallpaperViewModel = viewModel(),
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    downloadViewModel: DownloadViewModel
 ) {
     val context = LocalContext.current
     val downloader = remember { AndroidDownloader(context) }
@@ -60,14 +64,19 @@ fun WallpaperView(
             val itemList = listOf(
                 FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
                 FABItem(icon = Icons.Rounded.Create, text = "Definir fondo"),
-                FABItem(icon = Icons.Rounded.ArrowDropDown, text = "Descargar"),
+                FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
             )
             ExpandableFAB(
                 items = itemList,
                 onItemClick = { item ->
                     when (item.text) {
+                        "Agregar a favoritos" ->{
+
+                        }
+
                         "Descargar" -> {
                             downloader.downloadFile(picture.path, picture.id)
+                            downloadViewModel.addDownload(picture.toDownloadEntity())
                         }
 
                         "Definir fondo" -> {}
@@ -79,7 +88,7 @@ fun WallpaperView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp)
+                .padding(innerPadding)
         ) {
             Box(
                 modifier = Modifier

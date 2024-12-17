@@ -21,8 +21,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WallpaperGrid (
     listaWallpappers: List<WallpaperModel>,
+    favoriteIds: Set<String>,
     onWallpaperClick: (WallpaperModel) -> Unit,
     onWallpaperDoubleClick: (WallpaperModel) -> Unit = {},
+    onRemoveFavorite: (WallpaperModel) -> Unit,
     modifier: Modifier = Modifier,
     loadingContent: @Composable () -> Unit = {
         Box(
@@ -62,8 +64,10 @@ fun WallpaperGrid (
             items(listaWallpappers) { wallpaper ->
                 WallpaperItem(
                     wallpaper = wallpaper,
+                    isFavorite = favoriteIds.contains(wallpaper.id),
                     onClick = { onWallpaperClick(wallpaper) },
-                    onDoubleClick = { onWallpaperDoubleClick(wallpaper) }
+                    onDoubleClick = { onWallpaperDoubleClick(wallpaper) },
+                    onRemoveFavorite = { onRemoveFavorite(wallpaper) }
                 )
             }
         }

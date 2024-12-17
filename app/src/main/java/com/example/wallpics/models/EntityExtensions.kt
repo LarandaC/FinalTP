@@ -4,6 +4,15 @@ import com.google.gson.Gson
 
 fun WallpaperEntity.toModel(): WallpaperModel {
     val gson = Gson()
+
+    fun <T> convertJson(json: String?, clazz: Class<T>, default: T): T {
+        return try {
+            json?.let { gson.fromJson(it, clazz) } ?: default
+        } catch (e: Exception) {
+            default
+        }
+    }
+
     return WallpaperModel(
         id = this.id,
         url = "",
@@ -14,13 +23,32 @@ fun WallpaperEntity.toModel(): WallpaperModel {
         createdAt = "",
         resolution = this.resolution,
         favorites = "",
+        thumbs = convertJson(this.thumbs, Thumbs::class.java, Thumbs("", "", "")),
+        ratio = this.ratio,
+        dimensionX = 0,
+        dimensionY = 0,
+        path = this.path,
+        uploader = convertJson(this.uploader, Uploader::class.java, Uploader("", "", Avatar("", "", "", "")))
+    )
+}
+
+fun DownloadEntity.toModel(): WallpaperModel {
+    val gson = Gson()
+    return WallpaperModel(
+        id = this.id,
+        url = "",
+        shortUrl = this.shortUrl,
+        category = this.category,
+        fileSize = this.fileSize,
+        purity = "",
+        createdAt = "",
+        resolution = this.resolution,
+        favorites = "",
         thumbs = gson.fromJson(this.thumbs, Thumbs::class.java),
         ratio = this.ratio,
         dimensionX = 0,
         dimensionY = 0,
         path = this.path,
-        tags = gson.fromJson(this.tags, Array<Tag>::class.java).toList(),
         uploader = gson.fromJson(this.uploader, Uploader::class.java),
     )
 }
-

@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +38,9 @@ fun WallpaperScreen(
 ) {
     val listaWallpappers = wallpaperViewModel.imageList.value
     val isDarkTheme = isSystemInDarkTheme()
+    val favorites by favoritesViewModel.favorites.observeAsState(emptyList())
+    val favoriteIds = favorites.map { it.id }.toSet()
+
     // función para obtener los wallpapers
     LaunchedEffect(Unit) {
         wallpaperViewModel.getWallpapers(purity = 100, page = wallpaperViewModel.currentPage++)
@@ -97,12 +102,20 @@ fun WallpaperScreen(
 
         WallpaperGrid(
             listaWallpappers,
+            favoriteIds = favoriteIds,
             {
                 wallpaperViewModel.selectWallpaper(it)
                 navController.navigate(Route.WallpaperView)
             },
             onWallpaperDoubleClick = { wallpaper ->
-                favoritesViewModel.addFavorite(wallpaper.toEntity())
+                if (favoriteIds.contains(wallpaper.id)) {
+                    favoritesViewModel.removeFavorite(wallpaper.toEntity())
+                } else {
+                    favoritesViewModel.addFavorite(wallpaper.toEntity())
+                }
+            },
+            onRemoveFavorite = { wallpaper ->
+                favoritesViewModel.removeFavorite(wallpaper.toEntity())
             },
             onBottomReached = {
                 wallpaperViewModel.getWallpapers(purity = 100, page = ++wallpaperViewModel.currentPage)

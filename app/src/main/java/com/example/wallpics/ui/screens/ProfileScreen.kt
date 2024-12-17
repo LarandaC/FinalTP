@@ -8,6 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DarkMode
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -72,7 +77,7 @@ fun ProfileScreen(
 
             // Opción "Subidas"
             MenuItem(
-                iconRes = android.R.drawable.arrow_up_float,
+                iconRes =  Icons.Rounded.Upload,
                 title = "Subidas",
                 subtitle = "Subir contenido y ver tus subidas",
                 isDarkTheme,
@@ -84,12 +89,11 @@ fun ProfileScreen(
 
             // Opción "Descargas"
             MenuItem(
-                iconRes = android.R.drawable.arrow_down_float,
+                iconRes = Icons.Rounded.Download,
                 title = "Descargas",
                 subtitle = "",
                 isDarkTheme,
                 onNavigate = {
-                    //wallpaperViewModel.setNewRoute(item.route)
                     navController.navigate(Route.Download)
                 }
             )
@@ -98,7 +102,7 @@ fun ProfileScreen(
 
             // Opción "Cambiar de tema"
             MenuItem(
-                iconRes = android.R.drawable.ic_menu_manage,
+                iconRes = Icons.Rounded.DarkMode,
                 title = "Cambiar de tema",
                 subtitle = "",
                 isDarkTheme,
@@ -114,8 +118,8 @@ fun ProfileScreen(
 
             // Opción "Iniciar sesión"
             MenuItem(
-                iconRes = android.R.drawable.ic_menu_revert,
-                title = "Iniciar sesión",
+                iconRes = Icons.Rounded.Person,
+                title = "Cerrar sesión",
                 subtitle = "",
                 isDarkTheme,
                 onNavigate = {
