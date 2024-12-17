@@ -94,7 +94,7 @@ fun WallpicsApp( modifier: Modifier = Modifier, viewModel: WallpicsViewModel = v
                         ProfileScreen(wallpaperViewModel, navController)
                     }
                     composable<Route.WallpaperView>{
-                        WallpaperView(wallpaperViewModel, scrollBehavior, downloadViewModel)
+                        WallpaperView(wallpaperViewModel, scrollBehavior, downloadViewModel, favoritesViewModel)
                     }
                     composable<Route.Search>{
                         Search(navController = navController, mainViewModel = wallpaperViewModel, favoritesViewModel = favoritesViewModel)

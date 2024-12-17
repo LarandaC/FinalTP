@@ -36,7 +36,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wallpics.models.WallpaperViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.wallpics.models.DownloadViewModel
+import com.example.wallpics.models.FavoritesViewModel
 import com.example.wallpics.models.toDownloadEntity
+import com.example.wallpics.models.toEntity
 import com.example.wallpics.ui.components.ExpandableFAB
 import com.example.wallpics.ui.components.FABItem
 import com.example.wallpics.ui.theme.BarraFondoDark
@@ -48,7 +50,8 @@ import com.example.wallpics.utils.AndroidDownloader
 fun WallpaperView(
     wallpaperViewModel: WallpaperViewModel = viewModel(),
     scrollBehavior: TopAppBarScrollBehavior,
-    downloadViewModel: DownloadViewModel
+    downloadViewModel: DownloadViewModel,
+    favoriteViewModel: FavoritesViewModel
 ) {
     val context = LocalContext.current
     val downloader = remember { AndroidDownloader(context) }
@@ -71,7 +74,7 @@ fun WallpaperView(
                 onItemClick = { item ->
                     when (item.text) {
                         "Agregar a favoritos" ->{
-
+                            favoriteViewModel.addFavorite(picture.toEntity())
                         }
 
                         "Descargar" -> {
