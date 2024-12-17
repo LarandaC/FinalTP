@@ -1,6 +1,5 @@
 package com.example.wallpics.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,11 +10,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +43,7 @@ import com.example.wallpics.ui.components.FABItem
 import com.example.wallpics.ui.theme.BarraFondoDark
 import com.example.wallpics.ui.theme.DarkColorScheme
 import com.example.wallpics.utils.AndroidDownloader
+import com.example.wallpics.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +55,10 @@ fun WallpaperView(
 ) {
     val context = LocalContext.current
     val downloader = remember { AndroidDownloader(context) }
+
+    val favorites by favoriteViewModel.favorites.observeAsState(emptyList())
+    val favoriteIds = favorites.map { it.id }.toSet()
+
     val isDarkTheme = isSystemInDarkTheme()
 
     scrollBehavior.state.heightOffset = 0f
@@ -75,7 +78,6 @@ fun WallpaperView(
             floatingActionButton = {
                 val itemList = listOf(
                     FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
-                    FABItem(icon = Icons.Rounded.Create, text = "Definir fondo"),
                     FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
                 )
                 ExpandableFAB(
@@ -83,15 +85,19 @@ fun WallpaperView(
                     onItemClick = { item ->
                         when (item.text) {
                             "Agregar a favoritos" -> {
-                                favoriteViewModel.addFavorite(picture.toEntity())
+                                if (favoriteIds.contains(picture.id)) {
+                                    showToast(context, "Ya se encuentra en favoritos")
+                                } else {
+                                    favoriteViewModel.addFavorite(picture.toEntity())
+                                    showToast(context, "Agregado a favoritos")
+                                }
                             }
 
                             "Descargar" -> {
                                 downloader.downloadFile(picture.path, picture.id)
                                 downloadViewModel.addDownload(picture.toDownloadEntity())
+                                showToast(context, "Descarga exitosa del archivo")
                             }
-
-                            "Definir fondo" -> {}
                         }
                     }
                 )
