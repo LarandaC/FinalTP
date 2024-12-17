@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="fondo_dark">#2E3A3F</color>
+    <color name="fondo_light">#E0E6E8</color>
+    <color name="primary_text_dark">#FFFFFF</color>
+    <color name="primary_text_light">#2E3A3F</color>
+    <color name="secondary_text">#888888</color>
+    <color name="boton_primario_dark">#A2C3D0</color>
+    <color name="boton_primario_light">#6091A0</color>
+    <color name="boton_secundario_light">#A2C3D0</color>
+    <color name="boton_secundario">#FFC857</color>
+    <color name="barra_fondo_dark">#A2C3D0</color>
+    <color name="iconos_dark">#2E3A3F</color>
+    <color name="icono_elegido_fondo_dark">#6A818A</color>
+    <color name="icono_elegido">#FFFFFF</color>
+    <color name="rojo">#E53935</color>
+    <color name="fondfo_login">#7898A5</color>
 </resources>
