@@ -1,5 +1,6 @@
 package com.example.wallpics.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,7 +44,7 @@ fun WallpaperScreen(
 
     // función para obtener los wallpapers
     LaunchedEffect(Unit) {
-        wallpaperViewModel.getWallpapers(purity = 100, page = wallpaperViewModel.currentPage++)
+        wallpaperViewModel.getWallpapers(purity = 100, page = wallpaperViewModel.currentPage)
     }
 
     // Pantalla principal
@@ -52,7 +53,6 @@ fun WallpaperScreen(
             .fillMaxSize()
             .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         Card(
             modifier = Modifier
@@ -67,31 +67,6 @@ fun WallpaperScreen(
         ) {
             Text(
                 text = "Úlimos añadidos",
-                modifier = Modifier
-                    .padding(10.dp),
-                fontWeight = FontWeight.SemiBold,
-                color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-
-        Card(
-            modifier = Modifier
-                .padding(top = 10.dp, bottom = 20.dp)
-                .wrapContentSize()
-                .padding(horizontal = 30.dp),
-            shape = RoundedCornerShape(50),
-            colors = CardDefaults.cardColors(
-                containerColor = if (isDarkTheme) DarkColorScheme.primary else BarraFondoDark
-            ),
-            elevation = CardDefaults.elevatedCardElevation(4.dp),
-            onClick = {
-                // Navegar a la pantalla de populares
-                navController.navigate(Route.Popular)
-            }
-        ) {
-            Text(
-                text = "Más populares",
                 modifier = Modifier
                     .padding(10.dp),
                 fontWeight = FontWeight.SemiBold,

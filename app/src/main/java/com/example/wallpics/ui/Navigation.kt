@@ -63,6 +63,7 @@ sealed class Route {
     object Register : Route()
     @Serializable
     object Popular: Route()
+    @Serializable
     object Download: Route()
 }
 
@@ -74,9 +75,9 @@ data class TopLevelRoute(
 
 val topLevelRoutes = listOf(
     TopLevelRoute("Ultimos Añadidos", Route.Home, Icons.Rounded.Home),
+    TopLevelRoute("Populares", Route.Popular, Icons.Rounded.Star),
     TopLevelRoute("Favorites", Route.Favorites, Icons.Rounded.Favorite),
     TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person),
-    TopLevelRoute("Populares", Route.Popular, Icons.Rounded.Star)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

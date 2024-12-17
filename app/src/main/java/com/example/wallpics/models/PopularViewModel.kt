@@ -1,37 +1,40 @@
 package com.example.wallpics.models
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpics.data.repo.WallpaperRepository
+import com.example.wallpics.data.retrofitService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PopularWallpapersViewModel(private val repository: WallpaperRepository) : ViewModel() {
+class PopularWallpapersViewModel : ViewModel() {
+    var imageList = mutableStateOf<List<WallpaperModel>>(emptyList()) // La lista de wallpapers
+        private set
+    var currentPage: Int =  1
+    var lastPage: Int = 1
 
 
-    private val _popularWallpapers = MutableStateFlow<List<WallpaperModel>>(emptyList())
-    val popularWallpapers: StateFlow<List<WallpaperModel>> = _popularWallpapers
-
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
-
-    fun loadPopularWallpapers(purity: Int = 100, page: Int = 1) {
+    fun fetchPopularWallpapers(purity: Int, page: Int) {
         viewModelScope.launch {
             try {
-
-                val response = repository.getPopularWallpapers(purity, page)
-
+                val response = retrofitService.webService.getPopularWallpapers(purity = purity, page = page)
                 if (response.isSuccessful) {
-
-                    _popularWallpapers.value = response.body()?.resultados ?: emptyList()
+                    val wallpapersResponse = response.body()
+                    println("popular response: $wallpapersResponse")
+                    if (wallpapersResponse != null) {
+                        imageList.value += wallpapersResponse.resultados
+                        currentPage = wallpapersResponse.meta.currentPage
+                        lastPage = wallpapersResponse.meta.lastPage
+                    } else {
+                        println("La respuesta está vacía o nula.")
+                    }
                 } else {
-                    _errorMessage.value = "Error: ${response.message()}"
+                    println("Error en la respuesta: ${response.message()}")
                 }
             } catch (e: Exception) {
-
-                _errorMessage.value = "Error: ${e.localizedMessage}"
+                println("Error al cargar las imágenes: ${e.message}")
             }
         }
     }
