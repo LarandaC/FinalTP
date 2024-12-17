@@ -1,13 +1,16 @@
 package com.example.wallpics.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.Download
@@ -19,7 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,78 +58,88 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "PikMe",
-                style = MaterialTheme.typography.bodyMedium.copy(
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(if (isDarkTheme) DarkColorScheme.primary else LightColorScheme.primary) // Color de fondo según el tema
+                    .padding(10.dp)
+            ) {
+
+                Text(
+                    text = "PikMe",
+                    modifier = Modifier
+                        .padding(10.dp),
+                    fontWeight = FontWeight.SemiBold,
                     color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
-                    fontSize = 32.sp
-                ),
-                modifier = Modifier.padding(top = 16.dp)
-            )
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 24.sp
+                )
+
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    text = "Contenido",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
+                    ),
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            Text(
-                text = "Contenido",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
-                ),
-                textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth()
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Opción "Subidas"
+                MenuItem(
+                    iconRes = Icons.Rounded.Upload,
+                    title = "Subidas",
+                    subtitle = "Subir contenido y ver tus subidas",
+                    isDarkTheme,
+                    onNavigate = {
+                    }
+                )
 
-            // Opción "Subidas"
-            MenuItem(
-                iconRes =  Icons.Rounded.Upload,
-                title = "Subidas",
-                subtitle = "Subir contenido y ver tus subidas",
-                isDarkTheme,
-                onNavigate = {
-                }
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Opción "Descargas"
+                MenuItem(
+                    iconRes = Icons.Rounded.Download,
+                    title = "Descargas",
+                    subtitle = "",
+                    isDarkTheme,
+                    onNavigate = {
+                        navController.navigate(Route.Download)
+                    }
+                )
 
-            // Opción "Descargas"
-            MenuItem(
-                iconRes = Icons.Rounded.Download,
-                title = "Descargas",
-                subtitle = "",
-                isDarkTheme,
-                onNavigate = {
-                    navController.navigate(Route.Download)
-                }
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Opción "Cambiar de tema"
+                MenuItem(
+                    iconRes = Icons.Rounded.DarkMode,
+                    title = "Cambiar de tema",
+                    subtitle = "",
+                    isDarkTheme,
+                    onNavigate = {
+                    }
+                )
 
-            // Opción "Cambiar de tema"
-            MenuItem(
-                iconRes = Icons.Rounded.DarkMode,
-                title = "Cambiar de tema",
-                subtitle = "",
-                isDarkTheme,
-                onNavigate = {
-                }
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Divider(color = Color.Gray, thickness = 1.dp)
 
-            Divider(color = Color.Gray, thickness = 1.dp)
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Opción "Iniciar sesión"
-            MenuItem(
-                iconRes = Icons.Rounded.Person,
-                title = "Cerrar sesión",
-                subtitle = "",
-                isDarkTheme,
-                onNavigate = {
-                }
-            )
+                // Opción "Iniciar sesión"
+                MenuItem(
+                    iconRes = Icons.Rounded.Person,
+                    title = "Cerrar sesión",
+                    subtitle = "",
+                    isDarkTheme,
+                    onNavigate = {
+                    }
+                )
+            }
         }
     }
-}
