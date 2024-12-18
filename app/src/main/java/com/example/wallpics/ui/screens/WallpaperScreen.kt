@@ -66,7 +66,7 @@ fun WallpaperScreen(
             elevation = CardDefaults.elevatedCardElevation(4.dp)
         ) {
             Text(
-                text = "Úlimos añadidos",
+                text = "Más recientes",
                 modifier = Modifier
                     .padding(10.dp),
                 fontWeight = FontWeight.SemiBold,
@@ -76,7 +76,8 @@ fun WallpaperScreen(
         }
 
         WallpaperGrid(
-            listaWallpappers,
+            uiState = wallpaperViewModel.uiState,
+            listaWallpappers = listaWallpappers,
             favoriteIds = favoriteIds,
             {
                 wallpaperViewModel.selectWallpaper(it)

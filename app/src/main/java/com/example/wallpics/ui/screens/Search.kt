@@ -101,6 +101,7 @@ fun Search(
                     }
                 } else {
                     WallpaperGrid(
+                        uiState = viewModel.uiState,
                         wallpaperList,
                         favoriteIds = favoriteIds,
                         {

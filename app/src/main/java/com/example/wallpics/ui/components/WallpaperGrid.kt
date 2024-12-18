@@ -17,23 +17,17 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import com.example.wallpics.constans.UiState
 
 @Composable
 fun WallpaperGrid (
+    uiState: UiState,
     listaWallpappers: List<WallpaperModel>,
     favoriteIds: Set<String>,
     onWallpaperClick: (WallpaperModel) -> Unit,
     onWallpaperDoubleClick: (WallpaperModel) -> Unit = {},
     onRemoveFavorite: (WallpaperModel) -> Unit,
     modifier: Modifier = Modifier,
-    loadingContent: @Composable () -> Unit = {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CircularProgressIndicator()
-        }
-    },
     onBottomReached: () -> Unit
 ) {
 
@@ -51,25 +45,29 @@ fun WallpaperGrid (
     }
 
 
-    if (listaWallpappers.isEmpty()) {
-        loadingContent()
-    } else {
-        LazyVerticalStaggeredGrid(
-            state = listState,
-            columns = StaggeredGridCells.Adaptive(150.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalItemSpacing = 4.dp,
-            modifier = modifier
-        ) {
-            items(listaWallpappers) { wallpaper ->
-                WallpaperItem(
-                    wallpaper = wallpaper,
-                    isFavorite = favoriteIds.contains(wallpaper.id),
-                    onClick = { onWallpaperClick(wallpaper) },
-                    onDoubleClick = { onWallpaperDoubleClick(wallpaper) },
-                    onRemoveFavorite = { onRemoveFavorite(wallpaper) }
-                )
+    when(uiState) {
+        is UiState.Loading -> LoadingIndicator()
+        is UiState.Error -> ErrorIndicator()
+        is UiState.Empty -> EmptyIndicator()
+        is UiState.Success -> {
+            LazyVerticalStaggeredGrid(
+                state = listState,
+                columns = StaggeredGridCells.Adaptive(150.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalItemSpacing = 4.dp,
+                modifier = modifier
+            ) {
+                items(listaWallpappers) { wallpaper ->
+                    WallpaperItem(
+                        wallpaper = wallpaper,
+                        isFavorite = favoriteIds.contains(wallpaper.id),
+                        onClick = { onWallpaperClick(wallpaper) },
+                        onDoubleClick = { onWallpaperDoubleClick(wallpaper) },
+                        onRemoveFavorite = { onRemoveFavorite(wallpaper) }
+                    )
+                }
             }
         }
     }
+
 }
