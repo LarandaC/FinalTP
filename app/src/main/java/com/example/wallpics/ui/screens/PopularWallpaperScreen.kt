@@ -86,6 +86,7 @@ fun PopularWallpapersScreen(
         }
 
         WallpaperGrid(
+            uiState = viewModel.uiState,
             listaWallpappers,
             favoriteIds = favoriteIds,
             {
