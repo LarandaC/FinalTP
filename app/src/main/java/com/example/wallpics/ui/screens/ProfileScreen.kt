@@ -42,12 +42,12 @@ fun ProfileScreen(
     wallpaperViewModel: WallpaperViewModel = viewModel(),
     navController: NavController
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(4.dp),
+            .padding(4.dp)
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -58,46 +58,12 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(if (isDarkTheme) DarkColorScheme.primary else LightColorScheme.primary) // Color de fondo según el tema
-                    .padding(10.dp)
-            ) {
-
-                Text(
-                    text = "PikMe",
-                    modifier = Modifier
-                        .padding(10.dp),
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 24.sp
-                )
-
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
                 Text(
                     text = "Contenido",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
-                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Opción "Subidas"
-                MenuItem(
-                    iconRes = Icons.Rounded.Upload,
-                    title = "Subidas",
-                    subtitle = "Subir contenido y ver tus subidas",
-                    isDarkTheme,
-                    onNavigate = {
-                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -107,37 +73,8 @@ fun ProfileScreen(
                     iconRes = Icons.Rounded.Download,
                     title = "Descargas",
                     subtitle = "",
-                    isDarkTheme,
                     onNavigate = {
                         navController.navigate(Route.Download)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Opción "Cambiar de tema"
-                MenuItem(
-                    iconRes = Icons.Rounded.DarkMode,
-                    title = "Cambiar de tema",
-                    subtitle = "",
-                    isDarkTheme,
-                    onNavigate = {
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Divider(color = Color.Gray, thickness = 1.dp)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Opción "Iniciar sesión"
-                MenuItem(
-                    iconRes = Icons.Rounded.Person,
-                    title = "Cerrar sesión",
-                    subtitle = "",
-                    isDarkTheme,
-                    onNavigate = {
                     }
                 )
             }

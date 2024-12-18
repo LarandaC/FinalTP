@@ -1,5 +1,6 @@
 package com.example.wallpics.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +19,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wallpics.ui.theme.DarkColorScheme
+import com.example.wallpics.ui.theme.IconoElegidoFondoDark
+import com.example.wallpics.ui.theme.IconosDark
 import com.example.wallpics.ui.theme.LightColorScheme
 
 @Composable
-fun MenuItem(iconRes: ImageVector, title: String, subtitle: String, isDarkTheme: Boolean, onNavigate: () -> Unit) {
+fun MenuItem(
+    iconRes: ImageVector,
+    title: String,
+    subtitle: String,
+    onNavigate: () -> Unit,
+    fabBackgroundColor: Color = if (isSystemInDarkTheme()) Color.White else IconosDark,
+    itemContentColor: Color = if (isSystemInDarkTheme())Color.White else IconosDark
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -30,7 +40,7 @@ fun MenuItem(iconRes: ImageVector, title: String, subtitle: String, isDarkTheme:
             Icon(
                 iconRes,
                 contentDescription = null,
-                tint = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
+                tint = fabBackgroundColor,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -41,7 +51,7 @@ fun MenuItem(iconRes: ImageVector, title: String, subtitle: String, isDarkTheme:
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = if (isDarkTheme) LightColorScheme.onPrimary else DarkColorScheme.background,
+                    color = itemContentColor,
                     fontSize = 18.sp
                 )
             )
@@ -49,7 +59,7 @@ fun MenuItem(iconRes: ImageVector, title: String, subtitle: String, isDarkTheme:
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = if (isDarkTheme) Color.Gray else Color.DarkGray,
+                        color = itemContentColor,
                         fontSize = 14.sp
                     )
                 )

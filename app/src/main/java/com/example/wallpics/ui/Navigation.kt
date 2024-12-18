@@ -10,9 +10,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,7 +79,7 @@ val topLevelRoutes = listOf(
     TopLevelRoute("Ultimos Añadidos", Route.Home, Icons.Rounded.Home),
     TopLevelRoute("Populares", Route.Popular, Icons.Rounded.Star),
     TopLevelRoute("Favorites", Route.Favorites, Icons.Rounded.Favorite),
-    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Person),
+    TopLevelRoute("Profile", Route.Profile, Icons.Rounded.Settings),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,10 +102,6 @@ fun TopBar(
         }
     }
 
-    // Verificar si la ruta actual es una de las rutas principales
-    val currentRouteObject = getRouteFromString(currentRoute.value)
-    val isMainRoute = topLevelRoutes.any { it.route == currentRouteObject }
-
     // Si currentRoute es null, no mostramos nada o mostramos una vista temporal
     if (currentRoute.value == null) {
         Log.d("TopBar", "Esperando la ruta actual...")
@@ -123,9 +121,8 @@ fun TopBar(
                 )
             },
             navigationIcon = {
-                if (isMainRoute) {
-
-                } else {
+                // si son las pantallas search y view, que muestren para volver atrás
+                if (currentRoute.value == Route.Search::class.simpleName || currentRoute.value == Route.WallpaperView::class.simpleName) {
                     val context = LocalContext.current
                     IconButton(onClick = {
                         if (!navController.popBackStack()) {
@@ -140,7 +137,8 @@ fun TopBar(
                 }
             },
             actions = {
-                if(currentRoute.value == Route.Home::class.simpleName){
+                // para que muestre el search en populares tambien
+                if(currentRoute.value == Route.Home::class.simpleName || currentRoute.value == Route.Popular::class.simpleName){
                     IconButton(onClick = { navController.navigate(Route.Search) }) {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -178,6 +176,7 @@ fun BottomNavigation(
         return
     }
 
+    // para que la barra de abajo no salga en otras pantallas
     if (currentRoute.value != Route.Login::class.simpleName && currentRoute.value != Route.Register::class.simpleName
         && currentRoute.value != Route.WallpaperView::class.simpleName && currentRoute.value != Route.Search::class.simpleName) {
     NavigationBar(
@@ -221,17 +220,4 @@ fun BottomNavigation(
         }
     }
 }
-}
-
-fun getRouteFromString(routeName: String?): Route? {
-    return when (routeName) {
-        Route.Home::class.simpleName -> Route.Home
-        Route.Favorites::class.simpleName -> Route.Favorites
-        Route.Profile::class.simpleName -> Route.Profile
-        Route.WallpaperView::class.simpleName -> Route.WallpaperView
-        Route.Search::class.simpleName -> Route.Search
-        Route.Login::class.simpleName -> Route.Login
-        Route.Register::class.simpleName -> Route.Register
-        else -> null
-    }
 }
