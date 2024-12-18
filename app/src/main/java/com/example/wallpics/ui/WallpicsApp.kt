@@ -23,6 +23,7 @@ import com.example.wallpics.models.DownloadsViewModelFactory
 import com.example.wallpics.models.FavoritesViewModel
 import com.example.wallpics.models.FavoritesViewModelFactory
 import com.example.wallpics.models.WallpaperViewModel
+import com.example.wallpics.models.toModel
 import com.example.wallpics.ui.screens.Download
 import com.example.wallpics.ui.screens.LoginScreen
 import com.example.wallpics.ui.screens.PopularWallpapersScreen
@@ -87,7 +88,10 @@ fun WallpicsApp(modifier: Modifier = Modifier, viewModel: WallpicsViewModel = vi
                     FavoritesScreen(
                         favoritesDao,
                         navController,
-                        onWallpaperClick = {}
+                        {
+                            wallpaperViewModel.selectWallpaper(it.toModel())
+                            navController.navigate(Route.WallpaperView)
+                        },
                     )
                 }
                 composable<Route.Profile> {

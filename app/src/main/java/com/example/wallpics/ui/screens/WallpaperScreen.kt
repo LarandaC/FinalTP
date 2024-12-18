@@ -93,6 +93,7 @@ fun WallpaperScreen(
                 favoritesViewModel.removeFavorite(wallpaper.toEntity())
             },
             onBottomReached = {
+                wallpaperViewModel.currentPage++
                 wallpaperViewModel.getWallpapers(purity = 100, page = ++wallpaperViewModel.currentPage)
             }
         )
