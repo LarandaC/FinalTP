@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -63,8 +65,13 @@ fun WallpaperView(
 
     scrollBehavior.state.heightOffset = 0f
     val picture = wallpaperViewModel.selectedWallpaper
+    val isFavorite = remember { mutableStateOf(false) } // Estado inicial
 
     val scaleState = remember { mutableStateOf(1f) }
+
+    picture?.let {
+        isFavorite.value = favoriteIds.contains(it.id)
+    }
 
     if (picture == null) {
         Box(
@@ -77,7 +84,10 @@ fun WallpaperView(
         Scaffold(
             floatingActionButton = {
                 val itemList = listOf(
-                    FABItem(icon = Icons.Rounded.Favorite, text = "Agregar a favoritos"),
+                    FABItem(
+                        icon = if (isFavorite.value) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                        text = if (isFavorite.value) "Quitar de favoritos" else "Agregar a favoritos"
+                    ),
                     FABItem(icon = Icons.Rounded.Download, text = "Descargar"),
                 )
                 ExpandableFAB(
@@ -85,12 +95,15 @@ fun WallpaperView(
                     onItemClick = { item ->
                         when (item.text) {
                             "Agregar a favoritos" -> {
-                                if (favoriteIds.contains(picture.id)) {
-                                    showToast(context, "Ya se encuentra en favoritos")
-                                } else {
-                                    favoriteViewModel.addFavorite(picture.toEntity())
-                                    showToast(context, "Agregado a favoritos")
-                                }
+                                favoriteViewModel.addFavorite(picture.toEntity())
+                                showToast(context, "Agregado a favoritos")
+                                isFavorite.value = true
+                            }
+
+                            "Quitar de favoritos" -> {
+                                favoriteViewModel.removeFavorite(picture.toEntity())
+                                showToast(context, "Eliminado de favoritos")
+                                isFavorite.value = false
                             }
 
                             "Descargar" -> {
@@ -117,7 +130,7 @@ fun WallpaperView(
                         painter = rememberAsyncImagePainter(picture.path),
                         contentDescription = picture.category,
                         modifier = Modifier
-                            .fillMaxSize() // Asegura que la imagen ocupe el ancho completo
+                            .fillMaxSize()
                             .aspectRatio(1f) // Mantiene la relación de aspecto de la imagen
                             .graphicsLayer(
                                 scaleX = scaleState.value,
@@ -156,7 +169,11 @@ fun WallpaperView(
                         }
                     }
                     Text(
-                        text = "Category: ${picture.category ?: "N/A"}",
+                        text = "Categoría: ${picture.category ?: "N/A"}",
+                        modifier = Modifier.padding(top = 8.dp) // Espaciado hacia abajo
+                    )
+                    Text(
+                        text = "Resolución: ${picture.resolution ?: "N/A"}",
                         modifier = Modifier.padding(top = 8.dp) // Espaciado hacia abajo
                     )
                 }
